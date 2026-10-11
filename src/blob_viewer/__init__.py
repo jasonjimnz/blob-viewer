@@ -7,7 +7,7 @@ fetched once.
 """
 
 __title__ = "blob-viewer"
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 __author__ = "Jason Jiménez Cruz"
 __license__ = "MIT"
 __app_name__ = "Blob Viewer"

@@ -389,7 +389,9 @@ window.BV = window.BV || {};
       const isDir = row.dataset.dir === '1';
       row.addEventListener('click', (e) => {
         if (e.target.closest('.row-menu, .badge.sync')) return;
-        if (isDir) loadObjects(searchMode ? key : joinPath(state.prefix, key));
+        // listing keys are workspace-root-relative (they already include the
+        // current prefix), so navigate with the key as-is
+        if (isDir) loadObjects(key);
         else openPreview(key);
       });
       row.addEventListener('dblclick', () => { if (!isDir) openPreview(key); });
@@ -416,11 +418,6 @@ window.BV = window.BV || {};
         await syncFile(badge.dataset.sync);
       });
     });
-  }
-
-  function joinPath(prefix, key) {
-    const full = (prefix || '') + key;
-    return full;
   }
 
   function renderCrumbs(prefixOverride, label) {
@@ -462,7 +459,7 @@ window.BV = window.BV || {};
       if (v.sync_available) items.push({ label: 'Sync new version', icon: 'sync', action: () => syncFile(key) });
       if (v.cached) items.push({ label: 'Remove from cache', icon: 'trash', action: () => evictFile(key) });
     } else {
-      items.push({ label: 'Open folder', icon: 'folder', action: () => loadObjects(joinPath(state.prefix, key)) });
+      items.push({ label: 'Open folder', icon: 'folder', action: () => loadObjects(key) });
     }
     items.push('-');
     items.push({ label: 'Copy path', icon: 'copy', action: () => ui.copyText(key).catch(() => {}) });

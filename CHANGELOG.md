@@ -2,6 +2,17 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.7] — 2026-10-11
+
+### Fixed
+
+- Deep folder navigation produced duplicated paths (`/c1/c2` → entering `c3`
+  resolved `/c1/c2/c2/c3` or failed outright). Listing keys are already
+  workspace-root-relative, so the UI navigated with the raw key instead of
+  re-joining the current prefix (`joinPath` removed).
+- Browser e2e regression: navigates `e2e → deep → inner.txt`, asserts exact
+  breadcrumb segments and back-navigation via breadcrumb click.
+
 ## [0.1.6] — 2026-10-11
 
 ### Security

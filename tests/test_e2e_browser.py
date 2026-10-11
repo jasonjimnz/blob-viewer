@@ -35,9 +35,11 @@ def markdown_fixture(rustfs_ws, service_session):
                      Body="# E2E Hello\n\nfrom **RustFS**")
     _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/long.md",
                      Body="\n".join(f"## Section {i}\n\nFiller paragraph {i}.\n" for i in range(80)))
+    _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/deep/inner.txt", Body="deep object")
     c = create_app(service_session).test_client()
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/hello.md"})
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/long.md"})
+    c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/deep/inner.txt"})
     yield
 
 
@@ -83,6 +85,24 @@ def test_ui_browse_preview_sync(live_server, browser):
     page.wait_for_selector(".file-table .row, .file-card")
     expect(page.locator("body")).to_contain_text("hello.md")
     expect(page.locator("body")).to_contain_text("app.py")
+
+    # regression: deep navigation must not duplicate path segments
+    # (listing keys are root-relative; the UI must not re-join the prefix)
+    page.get_by_text("deep", exact=True).first.click()
+    page.wait_for_selector(".file-table .row, .file-card")
+    expect(page.locator("body")).to_contain_text("inner.txt")
+    crumbs = page.locator("#crumbbar").inner_text()
+    segments = [s.strip() for s in crumbs.split("\n") if s.strip() and s.strip() != "/"]
+    assert segments == ["rustfs-e2e", "e2e", "deep"], f"breadcrumb wrong: {segments!r}"
+    page.get_by_text("inner.txt").first.click()
+    page.wait_for_selector(".preview-text, .preview-binary")
+    expect(page.locator(".modal")).to_contain_text("deep object")
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
+    # back into e2e/ via breadcrumb
+    page.locator('.crumb[data-prefix="e2e/"]').click()
+    page.wait_for_selector(".file-table .row, .file-card")
+    expect(page.locator("body")).to_contain_text("hello.md")
 
     # open the markdown file -> preview modal renders rendered markdown
     page.get_by_text("hello.md").first.click()
