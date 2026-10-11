@@ -23,6 +23,15 @@ class CacheError(Exception):
     pass
 
 
+def _unlink_quiet(path: str | Path) -> bool:
+    """Delete a file ignoring Windows file-locking races (best effort)."""
+    try:
+        Path(path).unlink(missing_ok=True)
+        return True
+    except OSError:
+        return False
+
+
 @dataclass
 class CachedFile:
     workspace_id: str
@@ -183,7 +192,7 @@ class CacheManager:
     def remove_entry(self, workspace_id: str, key: str) -> None:
         cached = self.get_entry(workspace_id, key)
         if cached:
-            Path(cached.local_path).unlink(missing_ok=True)
+            _unlink_quiet(cached.local_path)
             self.db.execute(
                 "DELETE FROM cache_entries WHERE workspace_id = ? AND key = ?",
                 (workspace_id, key),
@@ -194,11 +203,8 @@ class CacheManager:
         entries = self.list_entries(workspace_id)
         count = 0
         for entry in entries:
-            try:
-                Path(entry.local_path).unlink(missing_ok=True)
+            if _unlink_quiet(entry.local_path):
                 count += 1
-            except OSError:
-                pass
         if workspace_id:
             self.db.execute(
                 "DELETE FROM cache_entries WHERE workspace_id = ?", (workspace_id,)

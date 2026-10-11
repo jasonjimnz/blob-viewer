@@ -2,11 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
   <title>Blob Viewer</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/themes.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/vendor/highjs/github-dark.min.css" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="/static/vendor/highjs/github.min.css" media="(prefers-color-scheme: light)">
+  <script type="module">
+    // apply the saved theme before first paint to avoid flashes
+    try { const t = localStorage.getItem('bv-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch {}
+  </script>
 </head>
 <body>
-  <!-- Placeholder: replaced by the full UI in the feature/ui branch -->
-  <h1>Blob Viewer</h1>
-  <p>The UI is loading…</p>
+  <div id="app"></div>
+
+  <!-- vendored libraries (no CDN — works fully offline / isolated) -->
+  <script src="/static/vendor/marked.min.js"></script>
+  <script src="/static/vendor/purify.min.js"></script>
+  <script src="/static/vendor/highjs/highlight.min.js"></script>
+  {% for lang in ['python','javascript','typescript','json','bash','yaml','xml','css','go','rust','java','kotlin','sql','dockerfile','markdown','ini','perl','ruby','php','c','cpp','csharp','protobuf','graphql','lua','swift'] %}
+  <script src="/static/vendor/highjs/languages/{{ lang }}.min.js"></script>
+  {% endfor %}
+
+  <!-- application -->
+  <script src="/static/js/icons.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/app.js"></script>
 </body>
 </html>

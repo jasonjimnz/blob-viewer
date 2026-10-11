@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from flask import Flask, Response, g, jsonify, request, send_file
+from flask import Flask, Response, g, jsonify, render_template, request, send_file
 from werkzeug.exceptions import BadRequest
 
 from . import __version__
@@ -390,7 +390,7 @@ def create_app(service: AppService) -> Flask:
     def spa(_spa_path: str = ""):
         if _spa_path.startswith(("api/", "static/")):
             raise ApiError("Not found", 404)
-        return send_file(Path(__file__).parent / "templates" / "index.html")
+        return render_template("index.html")
 
     return app
 
