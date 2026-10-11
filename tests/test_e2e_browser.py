@@ -14,9 +14,9 @@ import boto3
 import pytest
 from botocore.client import Config
 from playwright.sync_api import expect, sync_playwright
-from tests.conftest import RUSTFS_ACCESS, RUSTFS_BUCKET, RUSTFS_ENDPOINT, RUSTFS_SECRET, needs_s3
+from tests.conftest import RUSTFS_ACCESS, RUSTFS_BUCKET, RUSTFS_ENDPOINT, RUSTFS_SECRET
 
-pytestmark = [pytest.mark.e2e, needs_s3]
+pytestmark = [pytest.mark.e2e]
 
 
 def _s3():

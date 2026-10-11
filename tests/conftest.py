@@ -15,23 +15,14 @@ from blob_viewer.api import create_app  # noqa: E402
 from blob_viewer.paths import Home  # noqa: E402
 from blob_viewer.service import AppService  # noqa: E402
 
-# Credentials for the optional real-S3 e2e tests.  Never hard-coded: set them
-# in your environment when running the e2e suite against your own instance.
-#   BLOB_VIEWER_E2E_S3_ENDPOINT   e.g. http://localhost:9000
-#   BLOB_VIEWER_E2E_S3_ACCESS
-#   BLOB_VIEWER_E2E_S3_SECRET
-#   BLOB_VIEWER_E2E_S3_BUCKET
+# Default S3 endpoint for the real-S3 e2e tests: a local RustFS/MinIO
+# instance (localhost:9000).  Override any of these with environment
+# variables if your instance differs.
+#   BLOB_VIEWER_E2E_S3_ENDPOINT / _S3_ACCESS / _S3_SECRET / _S3_BUCKET
 RUSTFS_ENDPOINT = os.environ.get("BLOB_VIEWER_E2E_S3_ENDPOINT", "http://localhost:9000")
-RUSTFS_ACCESS = os.environ.get("BLOB_VIEWER_E2E_S3_ACCESS", "")
-RUSTFS_SECRET = os.environ.get("BLOB_VIEWER_E2E_S3_SECRET", "")
+RUSTFS_ACCESS = os.environ.get("BLOB_VIEWER_E2E_S3_ACCESS", "rustfsadmin")
+RUSTFS_SECRET = os.environ.get("BLOB_VIEWER_E2E_S3_SECRET", "rustfsadmin")
 RUSTFS_BUCKET = os.environ.get("BLOB_VIEWER_E2E_S3_BUCKET", "blob-viewer-test")
-
-E2E_S3_AVAILABLE = bool(RUSTFS_ACCESS and RUSTFS_SECRET)
-
-needs_s3 = pytest.mark.skipif(
-    not E2E_S3_AVAILABLE,
-    reason="set BLOB_VIEWER_E2E_S3_ENDPOINT/ACCESS/SECRET to run real-S3 e2e tests",
-)
 
 
 @pytest.fixture()
