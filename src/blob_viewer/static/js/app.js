@@ -27,6 +27,13 @@ window.BV = window.BV || {};
   // =========================================================================
 
   async function boot() {
+    // surface any unexpected JS error instead of failing silently
+    window.addEventListener('error', (e) => {
+      if (e.message) ui.toast(`UI error: ${e.message}`, 'error', 8000);
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      ui.toast(`UI error: ${e.reason}`, 'error', 8000);
+    });
     ui.applyTheme(ui.savedTheme() || 'obsidian');
     renderShell();
     try {
@@ -606,24 +613,49 @@ window.BV = window.BV || {};
   }
 
   async function fetchText(url) {
+    // read bytes and decode with UTF-8 first; fall back to windows-1252 when
+    // the payload isn't valid UTF-8 (legacy Windows exports, old tools…)
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    return resp.text();
+    const buf = await resp.arrayBuffer();
+    try {
+      return new TextDecoder('utf-8', { fatal: true }).decode(buf);
+    } catch {
+      return new TextDecoder('windows-1252').decode(buf);
+    }
   }
 
   async function renderMarkdown(body, url) {
     body.className = 'preview-markdown';
     body.innerHTML = '<div class="empty-state">Rendering…</div>';
+    let md;
     try {
-      const md = await fetchText(url);
-      body.innerHTML = DOMPurify.sanitize(marked.parse(md), {
+      md = await fetchText(url);
+    } catch (err) {
+      body.innerHTML = `<div class="empty-state">Could not load file: ${ui.escapeHtml(err.message)}</div>`;
+      return;
+    }
+    try {
+      if (typeof window.marked === 'undefined' || typeof window.DOMPurify === 'undefined') {
+        throw new Error('markdown libraries failed to load (marked/DOMPurify)');
+      }
+      const parsed = marked.parse(md);
+      // marked can return a Promise when async extensions are active
+      const rawHtml = (parsed && typeof parsed.then === 'function') ? await parsed : String(parsed ?? '');
+      if (typeof rawHtml !== 'string') {
+        throw new Error('markdown renderer returned a non-string result');
+      }
+      body.innerHTML = DOMPurify.sanitize(rawHtml, {
         ADD_ATTR: ['target'],
         FORBID_TAGS: ['style'],
       });
       body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener'; });
       body.querySelectorAll('pre code').forEach((block) => window.hljs?.highlightElement(block));
     } catch (err) {
-      body.innerHTML = `<div class="empty-state">Could not load file: ${ui.escapeHtml(err.message)}</div>`;
+      // never leave the user with a blank/broken pane: show the source instead
+      ui.toast(`Markdown preview failed (${err.message}) — showing source`, 'warn', 6000);
+      body.className = 'preview-text';
+      body.innerHTML = `<pre>${ui.escapeHtml(md)}</pre>`;
     }
   }
 

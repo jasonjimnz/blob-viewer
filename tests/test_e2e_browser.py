@@ -84,6 +84,11 @@ def test_ui_browse_preview_sync(live_server, browser):
     # open the markdown file -> preview modal renders rendered markdown
     page.get_by_text("hello.md").first.click()
     page.wait_for_selector(".preview-markdown")
+    # regression: modal head must show the real title, never a stringified DOM
+    # element like "[object HTMLDivElement]"
+    head_text = page.locator(".modal-head .m-title").inner_text()
+    assert "hello.md" in head_text, f"modal head broken: {head_text!r}"
+    assert "[object" not in page.locator(".modal").inner_text()
     expect(page.locator(".preview-markdown h1")).to_contain_text("E2E Hello")
     expect(page.locator(".preview-markdown strong")).to_contain_text("RustFS")
 

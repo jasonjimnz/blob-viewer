@@ -2,6 +2,25 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.4] — 2026-10-11
+
+### Fixed
+
+- Modal headers rendered as the literal text “[object HTMLDivElement]”: the
+  modal-head helper returned a DOM element that was interpolated into an HTML
+  template string. It now returns an HTML string; the close button is bound
+  via data-attribute. Affected every modal (file preview, settings, confirm,
+  workspace form).
+
+### Improved
+
+- Markdown preview is defensive: awaited/handled non-string renderer output,
+  explicit error when the vendored libraries fail to load, and a source
+  fallback so a broken render never leaves a blank pane.
+- Text decoding falls back to windows-1252 for non-UTF-8 files.
+- Unexpected JS errors now surface as toasts instead of failing silently.
+- Browser e2e regression test asserts the modal head shows the real title.
+
 ## [0.1.3] — 2026-10-11
 
 ### Fixed

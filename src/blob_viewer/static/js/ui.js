@@ -62,6 +62,7 @@ BV.ui = (() => {
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     const close = () => { overlay.remove(); if (onClose) onClose(); };
+    modal.querySelector('[data-close-modal]')?.addEventListener('click', close);
     overlay.addEventListener('mousedown', (e) => { if (e.target === overlay) close(); });
     document.addEventListener('keydown', function esc(e) {
       if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
@@ -70,15 +71,12 @@ BV.ui = (() => {
   }
 
   function modalHead(title, sub) {
-    const head = document.createElement('div');
-    head.className = 'modal-head';
-    head.innerHTML = `<div class="m-title">${title}${sub ? `<span class="m-sub">${escapeHtml(sub)}</span>` : ''}</div>`;
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'iconbtn';
-    closeBtn.innerHTML = icons.el('x');
-    closeBtn.addEventListener('click', () => closeBtn.closest('.modal-overlay')?.remove());
-    head.appendChild(closeBtn);
-    return head;
+    // Returns an HTML *string* (callers interpolate it into innerHTML).
+    // The close button is bound by openModal() via [data-close-modal].
+    return `<div class="modal-head">
+      <div class="m-title">${title}${sub ? `<span class="m-sub">${escapeHtml(sub)}</span>` : ''}</div>
+      <button class="iconbtn" data-close-modal title="Close">${icons.el('x')}</button>
+    </div>`;
   }
 
   // ---- theme --------------------------------------------------------------------
