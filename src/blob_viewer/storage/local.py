@@ -85,6 +85,21 @@ class LocalStorage(Storage):
         shutil.copyfile(self.resolve(key), dest_path)
         return entry
 
+    def list_all(self, prefix: str = "", limit: int = 20000) -> list[BlobEntry]:
+        base = self.resolve(prefix)
+        if not base.exists():
+            raise NotFoundError(f"'{prefix}' does not exist in this workspace")
+        entries: list[BlobEntry] = []
+        for path in sorted(base.rglob("*"), key=lambda p: str(p).lower()):
+            if not path.is_file() or path.name.startswith("."):
+                continue
+            entries.append(
+                self._entry(path, str(path.relative_to(self.root)).replace("\\", "/"))
+            )
+            if len(entries) >= limit:
+                break
+        return entries
+
     # -- writes ---------------------------------------------------------------
 
     def _ensure_writable(self) -> None:
