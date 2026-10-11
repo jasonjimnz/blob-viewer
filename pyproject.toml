@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blob-viewer"
-version = "0.1.2"
+version = "0.1.3"
 description = "A personal S3/MinIO bucket browser and file previewer. Desktop app (pywebview) and server, with a local download cache, multiple workspaces and a guided CLI."
 readme = "README.md"
 requires-python = ">=3.11"

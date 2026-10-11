@@ -43,7 +43,7 @@ def run_desktop(service: AppService, *, port: int | None = None) -> None:
         width=1360,
         height=880,
         min_size=(900, 600),
-        background="#0f1115",
+        background_color="#0f1115",
     )
 
     def _on_shown() -> None:

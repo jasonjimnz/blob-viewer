@@ -2,6 +2,13 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.3] — 2026-10-11
+
+### Fixed
+
+- Desktop mode crashed on launch: `create_window()` received an invalid
+  `background` argument — the correct pywebview parameter is `background_color`.
+
 ## [0.1.2] — 2026-10-11
 
 ### Fixed
