@@ -125,6 +125,26 @@ class S3Storage(Storage):
         except BotoCoreError as exc:
             raise StorageError(f"S3 request failed: {exc}") from exc
 
+    def list_all(self, prefix: str = "", limit: int = 20000) -> list[BlobEntry]:
+        full_prefix = self._full_key(prefix)
+        entries: list[BlobEntry] = []
+        paginator = self.client.get_paginator("list_objects_v2")
+        try:
+            for page in paginator.paginate(Bucket=self.bucket, Prefix=full_prefix):
+                for obj in page.get("Contents", []):
+                    if obj["Key"].endswith("/"):
+                        continue
+                    rel = obj["Key"][len(self.prefix):]
+                    entries.append(self._entry_from_s3({**obj, "Key": rel}))
+                    if len(entries) >= limit:
+                        return entries
+        except ClientError as exc:
+            raise _translate(exc) from exc
+        except BotoCoreError as exc:
+            raise StorageError(f"S3 request failed: {exc}") from exc
+        return entries
+
+
     def open(self, key: str) -> BinaryIO:
         try:
             resp = self.client.get_object(Bucket=self.bucket, Key=self._full_key(key))
