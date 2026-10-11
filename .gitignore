@@ -219,3 +219,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 .idea/
+
+# generated site output (only lives on the gh-pages branch)
+site/
+/*.html
+/favicon.svg
