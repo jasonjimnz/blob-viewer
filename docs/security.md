@@ -47,6 +47,16 @@ In locked mode:
 
 ## Exposing to a network — checklist
 
+> **Warning**
+>
+> **Never expose an instance with default credentials.** The
+> `rustfsadmin`/`rustfsadmin` pair used in these docs is a *local-development*
+> convenience only. Any Blob Viewer instance reachable from outside your
+> machine — LAN, VPN, reverse proxy, internet — must run with **strong,
+> unique credentials** (`--locked` mode + a long master password) and an S3
+> backend with strong access keys. Default credentials on an exposed service
+> are the single most common way personal tools get compromised.
+
 1. Always run `serve --locked` when binding to anything but localhost.
 2. Keep the data directory (`BLOB_VIEWER_HOME`) private to the service user.
 3. Prefer TLS: put the container behind a reverse proxy (Caddy, Traefik, nginx) — see [Docker deployment](docker.md).

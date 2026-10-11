@@ -27,6 +27,13 @@ Fields:
 
 Remote workspaces are **read-only by design**: files are downloaded to your cache for viewing but Blob Viewer will never create, modify or delete anything in the bucket — every write API returns `403`.
 
+> **Warning**
+>
+> If your S3 backend uses default credentials (e.g. `rustfsadmin`/`rustfsadmin`,
+> `minioadmin`/`minioadmin`), keep it bound to localhost. Anything exposed to a
+> network or the internet must use strong, unique access keys — default
+> credentials on an exposed service are an open door.
+
 ### Adding via CLI (non-interactive)
 
 ```bash

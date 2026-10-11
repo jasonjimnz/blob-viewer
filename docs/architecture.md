@@ -84,3 +84,9 @@ tests/test_e2e_browser.py    e2e: Playwright Chromium driving the real UI
 ```
 
 Run everything with `pytest -m e2e tests/`. The real-S3 e2e tests target a local RustFS/MinIO instance at `http://localhost:9000` (default credentials `rustfsadmin/rustfsadmin`, bucket `blob-viewer-test`; fixtures are created automatically). If your instance differs, override any of `BLOB_VIEWER_E2E_S3_ENDPOINT`, `BLOB_VIEWER_E2E_S3_ACCESS`, `BLOB_VIEWER_E2E_S3_SECRET`, `BLOB_VIEWER_E2E_S3_BUCKET`.
+
+> **Note**
+>
+> These defaults are for a **local, non-exposed** development instance only.
+> Anything reachable from a network must use strong, unique credentials —
+> see [Security & locked mode](security.md#exposing-to-a-network---checklist).
