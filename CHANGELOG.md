@@ -2,6 +2,18 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.5] — 2026-10-11
+
+### Fixed
+
+- Preview modals did not scroll: the renderer swapped the wrapper's className,
+  dropping the layout classes, and the caller-provided wrapper inside `.modal`
+  was not a constrained flex column, so content grew past the modal and was
+  clipped. Preview classes are now applied additively (setPreviewClass) and
+  `.modal > div` is a bounded flex column; `.modal-body` gets `min-height: 0`.
+- Verified scroll for markdown, code and CSV previews; short files still fit
+  without scrollbars. Regression-tested in the browser e2e.
+
 ## [0.1.4] — 2026-10-11
 
 ### Fixed

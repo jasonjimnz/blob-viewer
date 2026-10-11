@@ -598,6 +598,12 @@ window.BV = window.BV || {};
     });
   }
 
+  function setPreviewClass(body, cls) {
+    // keep the layout classes (modal-body provides the scrolling) and swap
+    // only the preview-specific class
+    body.className = `modal-body preview-body ${cls}`;
+  }
+
   function renderPreviewBody(body, key, data) {
     const url = data.raw_url;
     switch (data.category) {
@@ -626,7 +632,7 @@ window.BV = window.BV || {};
   }
 
   async function renderMarkdown(body, url) {
-    body.className = 'preview-markdown';
+    setPreviewClass(body, 'preview-markdown');
     body.innerHTML = '<div class="empty-state">Rendering…</div>';
     let md;
     try {
@@ -654,13 +660,13 @@ window.BV = window.BV || {};
     } catch (err) {
       // never leave the user with a blank/broken pane: show the source instead
       ui.toast(`Markdown preview failed (${err.message}) — showing source`, 'warn', 6000);
-      body.className = 'preview-text';
+      setPreviewClass(body, 'preview-text');
       body.innerHTML = `<pre>${ui.escapeHtml(md)}</pre>`;
     }
   }
 
   async function renderCode(body, url, language) {
-    body.className = 'preview-code';
+    setPreviewClass(body, 'preview-code');
     body.innerHTML = '<pre><code class="hljs">Loading…</code></pre>';
     try {
       const text = await fetchText(url);
@@ -678,14 +684,14 @@ window.BV = window.BV || {};
   }
 
   async function renderText(body, url) {
-    body.className = 'preview-text';
+    setPreviewClass(body, 'preview-text');
     body.innerHTML = 'Loading…';
     try { body.innerHTML = `<pre>${ui.escapeHtml(await fetchText(url))}</pre>`; }
     catch (err) { body.innerHTML = `<div class="empty-state">Could not load file: ${ui.escapeHtml(err.message)}</div>`; }
   }
 
   async function renderCsv(body, url) {
-    body.className = 'preview-csv';
+    setPreviewClass(body, 'preview-csv');
     body.innerHTML = '<div class="empty-state">Loading…</div>';
     try {
       const text = await fetchText(url);
@@ -722,19 +728,19 @@ window.BV = window.BV || {};
   }
 
   function renderImage(body, url) {
-    body.className = 'preview-image';
+    setPreviewClass(body, 'preview-image');
     body.innerHTML = `<img src="${url}" alt="${ui.escapeHtml(url)}" loading="lazy">`;
   }
 
   function renderMedia(body, url, category) {
-    body.className = 'preview-media';
+    setPreviewClass(body, 'preview-media');
     body.innerHTML = category === 'audio'
       ? `<audio controls src="${url}"></audio>`
       : `<video controls src="${url}"></video>`;
   }
 
   function renderBinary(body, key) {
-    body.className = 'preview-binary';
+    setPreviewClass(body, 'preview-binary');
     body.innerHTML = `
       ${icons.el('fileBin')}
       <div><b>${ui.escapeHtml(ui.basename(key))}</b><br>
@@ -743,7 +749,7 @@ window.BV = window.BV || {};
   }
 
   function renderPdf(body, url) {
-    body.className = 'preview-pdf';
+    setPreviewClass(body, 'preview-pdf');
     body.innerHTML = `
       <div class="pdf-controls">
         <button class="btn small" id="pdf-prev">◀</button>

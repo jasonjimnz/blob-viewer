@@ -33,8 +33,11 @@ def markdown_fixture(rustfs_ws, service_session):
     """Ensure the browser test's expected object content (independent of order)."""
     _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/hello.md",
                      Body="# E2E Hello\n\nfrom **RustFS**")
+    _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/long.md",
+                     Body="\n".join(f"## Section {i}\n\nFiller paragraph {i}.\n" for i in range(80)))
     c = create_app(service_session).test_client()
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/hello.md"})
+    c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/long.md"})
     yield
 
 
@@ -91,11 +94,27 @@ def test_ui_browse_preview_sync(live_server, browser):
     assert "[object" not in page.locator(".modal").inner_text()
     expect(page.locator(".preview-markdown h1")).to_contain_text("E2E Hello")
     expect(page.locator(".preview-markdown strong")).to_contain_text("RustFS")
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
+
+    # regression: long content must be scrollable inside the modal
+    page.get_by_text("long.md").first.click()
+    page.wait_for_selector(".preview-markdown")
+    page.wait_for_timeout(400)
+    page.evaluate("document.querySelector('.preview-body').scrollTop = 99999")
+    scroll = page.evaluate("""() => { const el = document.querySelector('.preview-body');
+        return { ok: el.scrollHeight > el.clientHeight, moved: el.scrollTop > 0 }; }""")
+    assert scroll["ok"] and scroll["moved"], f"preview not scrollable: {scroll}"
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
 
     # cache badge appears in the modal footer (fresh download or cached copy)
+    page.get_by_text("hello.md").first.click()
+    page.wait_for_selector(".preview-markdown")
     badge_text = page.locator(".modal .badge").inner_text().strip()
     assert badge_text in ("downloaded", "from cache")
     page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
 
     # open the python file -> syntax-highlighted code preview
     page.get_by_text("app.py").first.click()
