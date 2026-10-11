@@ -2,6 +2,13 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.1] — 2026-10-11
+
+### Fixed
+
+- `blob-viewer init` crashed with `AttributeError: 'Namespace' object has no attribute 'name'`
+  when reaching the workspace wizard (the init command does not carry workspace flags).
+
 ## [0.1.0] — 2026-10-11
 
 First public release.
