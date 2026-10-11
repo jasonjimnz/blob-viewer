@@ -194,7 +194,13 @@ tests/test_e2e_rustfs.py     e2e: real S3 server (RustFS) on localhost:9000
 tests/test_e2e_browser.py    e2e: Playwright Chromium driving the real UI
 </code></pre></div>
 
-<p>Run everything with <code>pytest -m e2e tests/</code>. The real-S3 e2e tests need an S3 endpoint configured through environment variables (never hard-coded in the repo): <code>BLOB_VIEWER_E2E_S3_ENDPOINT</code>, <code>BLOB_VIEWER_E2E_S3_ACCESS</code>, <code>BLOB_VIEWER_E2E_S3_SECRET</code> and optionally <code>BLOB_VIEWER_E2E_S3_BUCKET</code>. They create their fixtures and are skipped when the variables are unset.</p>
+<p>Run everything with <code>pytest -m e2e tests/</code>. The real-S3 e2e tests target a local RustFS/MinIO instance at <code>http://localhost:9000</code> (default credentials <code>rustfsadmin/rustfsadmin</code>, bucket <code>blob-viewer-test</code>; fixtures are created automatically). If your instance differs, override any of <code>BLOB_VIEWER_E2E_S3_ENDPOINT</code>, <code>BLOB_VIEWER_E2E_S3_ACCESS</code>, <code>BLOB_VIEWER_E2E_S3_SECRET</code>, <code>BLOB_VIEWER_E2E_S3_BUCKET</code>.</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>These defaults are for a <strong>local, non-exposed</strong> development instance only.
+Anything reachable from a network must use strong, unique credentials —
+see <a href="security.md#exposing-to-a-network---checklist">Security &amp; locked mode</a>.</p>
+</blockquote>
 <div class="footer-note">Blob Viewer — MIT © Jason Jiménez Cruz ·
 <a href="https://github.com/jasonjimnz/blob-viewer">github.com/jasonjimnz/blob-viewer</a></div>
 

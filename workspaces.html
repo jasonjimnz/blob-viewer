@@ -119,6 +119,13 @@ main blockquote { border-left: 3px solid #4cc2ff; padding: 2px 14px; color: #8b9
 <li><strong>Path-style addressing</strong> — on by default. Path style (<code>http://host:9000/bucket</code>) is required by MinIO, RustFS, B2 and R2. Virtual-host style (<code>bucket.s3.amazonaws.com</code>) is what AWS uses; Blob Viewer's default works there too through the endpoint URL form above.</li>
 </ul>
 <p>Remote workspaces are <strong>read-only by design</strong>: files are downloaded to your cache for viewing but Blob Viewer will never create, modify or delete anything in the bucket — every write API returns <code>403</code>.</p>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>If your S3 backend uses default credentials (e.g. <code>rustfsadmin</code>/<code>rustfsadmin</code>,
+<code>minioadmin</code>/<code>minioadmin</code>), keep it bound to localhost. Anything exposed to a
+network or the internet must use strong, unique access keys — default
+credentials on an exposed service are an open door.</p>
+</blockquote>
 <h3 id="adding-via-cli-non-interactive">Adding via CLI (non-interactive)</h3>
 <div class="codehilite"><pre><span></span><code>blob-viewer<span class="w"> </span>workspace<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--kind<span class="w"> </span>s3<span class="w"> </span>--name<span class="w"> </span>documents<span class="w"> </span><span class="se">\</span>

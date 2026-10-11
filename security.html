@@ -107,6 +107,16 @@ blob-viewer<span class="w"> </span>user<span class="w"> </span>status
 <li><code>POST /api/auth/login</code> with wrong credentials fails closed; enumeration is mitigated with constant-time comparisons.</li>
 </ul>
 <h2 id="exposing-to-a-network-checklist">Exposing to a network — checklist</h2>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p><strong>Never expose an instance with default credentials.</strong> The
+<code>rustfsadmin</code>/<code>rustfsadmin</code> pair used in these docs is a <em>local-development</em>
+convenience only. Any Blob Viewer instance reachable from outside your
+machine — LAN, VPN, reverse proxy, internet — must run with <strong>strong,
+unique credentials</strong> (<code>--locked</code> mode + a long master password) and an S3
+backend with strong access keys. Default credentials on an exposed service
+are the single most common way personal tools get compromised.</p>
+</blockquote>
 <ol>
 <li>Always run <code>serve --locked</code> when binding to anything but localhost.</li>
 <li>Keep the data directory (<code>BLOB_VIEWER_HOME</code>) private to the service user.</li>
