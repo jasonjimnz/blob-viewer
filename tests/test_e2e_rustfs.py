@@ -1,8 +1,8 @@
-"""End-to-end tests against a real S3-compatible server (RustFS on :9000).
+"""End-to-end tests against a real S3-compatible server.
 
 Run with:  pytest -m e2e
-Requires:  RustFS (or MinIO) listening on localhost:9000 with
-           credentials rustfsadmin/rustfsadmin and bucket 'blob-viewer-test'.
+Requires:  an S3 endpoint configured via the BLOB_VIEWER_E2E_S3_* environment
+           variables (see tests/conftest.py).  Skipped when not configured.
 """
 from __future__ import annotations
 
@@ -10,9 +10,9 @@ import boto3
 import pytest
 from botocore.client import Config
 
-from tests.conftest import RUSTFS_BUCKET, RUSTFS_ENDPOINT, RUSTFS_ACCESS, RUSTFS_SECRET
+from tests.conftest import RUSTFS_ACCESS, RUSTFS_BUCKET, RUSTFS_ENDPOINT, RUSTFS_SECRET, needs_s3
 
-pytestmark = pytest.mark.e2e
+pytestmark = [pytest.mark.e2e, needs_s3]
 
 
 def s3():

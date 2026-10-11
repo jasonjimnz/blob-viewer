@@ -2,6 +2,16 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.6] — 2026-10-11
+
+### Security
+
+- Removed hard-coded test credentials from the repository. The real-S3 e2e
+  tests now take their endpoint/credentials exclusively from environment
+  variables (`BLOB_VIEWER_E2E_S3_ENDPOINT/ACCESS/SECRET/BUCKET`) and are
+  skipped when unset.
+- Removed IDE configuration files (`.idea/`) from version control.
+
 ## [0.1.5] — 2026-10-11
 
 ### Fixed

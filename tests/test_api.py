@@ -140,7 +140,7 @@ def test_write_blocked_on_remote(home):
     ws = svc.workspaces.create({
         "name": "ro", "kind": "s3", "endpoint": "http://localhost:9000",
         "bucket": "blob-viewer-test", "path_style": True,
-        "secrets": {"access_key": "rustfsadmin", "secret_key": "rustfsadmin"},
+        "secrets": {"access_key": "test-access-key", "secret_key": "test-secret-key"},
     })
     c = create_app(svc).test_client()
     base = f"/api/workspaces/{ws.id}"
