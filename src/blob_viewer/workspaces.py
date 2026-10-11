@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import sqlite3
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 from .db import Database, new_id, now
@@ -93,9 +94,17 @@ class Workspace:
 class WorkspaceStore:
     """CRUD operations for workspaces and their encrypted secrets."""
 
-    def __init__(self, db: Database, secret_store: SecretStore) -> None:
+    def __init__(
+        self,
+        db: Database,
+        secret_store: SecretStore,
+        home_root: Path | None = None,
+    ) -> None:
         self.db = db
         self.secrets = secret_store
+        # Relative local-workspace folders resolve against the application
+        # home so workspaces stay inside the app's data directory.
+        self.home_root = home_root
 
     # -- reads -------------------------------------------------------------
 
@@ -164,7 +173,7 @@ class WorkspaceStore:
             region=(data.get("region") or None),
             prefix=(data.get("prefix") or None),
             path_style=bool(data.get("path_style", kind == "s3")),
-            local_path=(data.get("local_path") or None),
+            local_path=self._resolve_local_path(data.get("local_path")),
             read_only=bool(data.get("read_only", kind == "s3")),
             description=(data.get("description") or None),
             color=(data.get("color") or None),
@@ -198,7 +207,7 @@ class WorkspaceStore:
             "region": data.get("region", current.region) or None,
             "prefix": data.get("prefix", current.prefix) or None,
             "path_style": data.get("path_style", current.path_style),
-            "local_path": data.get("local_path", current.local_path) or None,
+            "local_path": self._resolve_local_path(data.get("local_path", current.local_path)),
             "read_only": data.get("read_only", current.read_only),
             "description": data.get("description", current.description) or None,
             "color": data.get("color", current.color) or None,
@@ -275,6 +284,27 @@ class WorkspaceStore:
                 " ON CONFLICT(workspace_id, field) DO UPDATE SET ciphertext = excluded.ciphertext",
                 (ws.id, field_name, ciphertext),
             )
+
+    @staticmethod
+    def _normalize_local_path(value: str | None) -> str | None:
+        return value  # replaced by instance method; kept for API compatibility
+
+    def _resolve_local_path(self, value: str | None) -> str | None:
+        """Make local folder paths absolute.
+
+        ``~`` and absolute paths are honoured as given; *relative* paths are
+        resolved against the application home (e.g. ``./local`` becomes
+        ``<home>/local``), never against the current working directory.
+        """
+        if not value:
+            return None
+        try:
+            path = Path(value).expanduser()
+            if not path.is_absolute():
+                path = (self.home_root or Path.cwd()) / path
+            return str(path.resolve())
+        except OSError:  # pragma: no cover
+            return value
 
     def _validate(self, ws: Workspace) -> None:
         self._validate_fields(

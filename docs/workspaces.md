@@ -53,6 +53,10 @@ blob-viewer workspace add --kind local --name notes --local-path ~/Documents/not
 
 - Fully **writable** (unless you tick *read-only*): create folders, create/edit text files, rename, delete — from the UI.
 - Never leaves your machine; no credentials involved.
+- **Path rules**: absolute paths and `~` are used as given; *relative* paths
+  (e.g. `./notes`) resolve against the Blob Viewer home (`~/.blob-viewer/notes`),
+  keeping workspaces inside the application's data folder. A missing folder is
+  offered to be created during the wizard (created automatically in scripts).
 - Files are fingerprinted by `mtime+size` instead of S3 ETags, so version detection still works.
 
 ## Managing workspaces

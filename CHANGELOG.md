@@ -2,6 +2,17 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.2] — 2026-10-11
+
+### Fixed
+
+- Local-workspace folder paths are now normalised to absolute: relative paths
+  (e.g. `./local`) resolve against the **application home** (`~/.blob-viewer/local`),
+  never against the current working directory.
+- The workspace wizard offers to create a missing folder instead of saving a
+  workspace that cannot open (created automatically in non-interactive use).
+- Republished the package so installs contain the current source.
+
 ## [0.1.1] — 2026-10-11
 
 ### Fixed

@@ -270,6 +270,41 @@ def _prompt_s3(prefix_default: str = "") -> dict:
     }
 
 
+def _ensure_local_folder(service: AppService, data: dict) -> None:  # noqa: ANN001
+    """Resolve the local folder; offer to create it when missing.
+
+    Path rules (mirrors WorkspaceStore._resolve_local_path):
+      * ``~`` / absolute paths are honoured as given
+      * relative paths resolve against the application home (``./local``
+        becomes ``<home>/local``), never against the CWD
+    """
+    from pathlib import Path
+
+    raw = data.get("local_path")
+    if not raw:
+        return
+    path = Path(raw).expanduser()
+    if not path.is_absolute():
+        path = service.home.root / path
+    target = path.resolve()
+    data["local_path"] = str(target)
+    if target.exists():
+        return
+    interactive = sys.stdin.isatty()
+    if interactive:
+        create = _confirm(f"Folder '{target}' does not exist. Create it?", True)
+    else:
+        create = True  # scripted use: create automatically
+    if create:
+        target.mkdir(parents=True, exist_ok=True)
+        console.print(f"[green]✓[/green] Created folder {target}")
+    else:
+        console.print(
+            f"[yellow]![/yellow] Keeping '{target}' as configured — "
+            "the workspace will fail until the folder exists."
+        )
+
+
 def _test_and_report(service: AppService, ws_id: str, *, credentials: dict | None = None) -> bool:
     from .api import json_body  # noqa: F401  (import check only)
 
@@ -459,7 +494,11 @@ def _cmd_ws_add(args, initial: bool = False) -> int:  # noqa: ANN001
             data.update({k: v for k, v in s3.items() if v not in (None, "", {})})
     else:
         data["name"] = name or _ask("Workspace name")
-        data["local_path"] = local_path or _ask("Folder path")
+        raw_path = local_path or _ask(
+            "Folder path [dim](absolute, ~, or relative to the Blob Viewer home)[/dim]"
+        )
+        data["local_path"] = raw_path
+        _ensure_local_folder(service, data)
         read_only = read_only_flag or _confirm("Make it read-only?")
         if read_only:
             data["read_only"] = True
@@ -495,6 +534,7 @@ def _cmd_ws_edit(args) -> int:  # noqa: ANN001
             updates["secrets"] = _prompt_s3()["secrets"]
     else:
         updates["local_path"] = _ask("Folder path", ws.local_path or "") or ws.local_path
+        _ensure_local_folder(service, updates)
         updates["read_only"] = _confirm("Read-only?", ws.read_only)
     service.workspaces.update(ws.id, updates)
     console.print("[green]✓[/green] Workspace updated")

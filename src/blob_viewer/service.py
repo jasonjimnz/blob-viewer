@@ -51,7 +51,7 @@ class AppService:
             home=home,
             db=db,
             secrets=secrets,
-            workspaces=WorkspaceStore(db, secrets),
+            workspaces=WorkspaceStore(db, secrets, home_root=home.root),
             auth=AuthService(db),
             cache=CacheManager(home, db),
             locked=locked,
