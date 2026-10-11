@@ -141,6 +141,10 @@ main blockquote { border-left: 3px solid #4cc2ff; padding: 2px 14px; color: #8b9
 <ul>
 <li>Fully <strong>writable</strong> (unless you tick <em>read-only</em>): create folders, create/edit text files, rename, delete — from the UI.</li>
 <li>Never leaves your machine; no credentials involved.</li>
+<li><strong>Path rules</strong>: absolute paths and <code>~</code> are used as given; <em>relative</em> paths
+  (e.g. <code>./notes</code>) resolve against the Blob Viewer home (<code>~/.blob-viewer/notes</code>),
+  keeping workspaces inside the application's data folder. A missing folder is
+  offered to be created during the wizard (created automatically in scripts).</li>
 <li>Files are fingerprinted by <code>mtime+size</code> instead of S3 ETags, so version detection still works.</li>
 </ul>
 <h2 id="managing-workspaces">Managing workspaces</h2>

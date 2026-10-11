@@ -194,7 +194,7 @@ tests/test_e2e_rustfs.py     e2e: real S3 server (RustFS) on localhost:9000
 tests/test_e2e_browser.py    e2e: Playwright Chromium driving the real UI
 </code></pre></div>
 
-<p>Run everything with <code>pytest -m e2e tests/</code> (the e2e tests need RustFS/MinIO on <code>localhost:9000</code> with credentials <code>rustfsadmin/rustfsadmin</code> and a <code>blob-viewer-test</code> bucket; they create fixtures themselves).</p>
+<p>Run everything with <code>pytest -m e2e tests/</code>. The real-S3 e2e tests need an S3 endpoint configured through environment variables (never hard-coded in the repo): <code>BLOB_VIEWER_E2E_S3_ENDPOINT</code>, <code>BLOB_VIEWER_E2E_S3_ACCESS</code>, <code>BLOB_VIEWER_E2E_S3_SECRET</code> and optionally <code>BLOB_VIEWER_E2E_S3_BUCKET</code>. They create their fixtures and are skipped when the variables are unset.</p>
 <div class="footer-note">Blob Viewer — MIT © Jason Jiménez Cruz ·
 <a href="https://github.com/jasonjimnz/blob-viewer">github.com/jasonjimnz/blob-viewer</a></div>
 
