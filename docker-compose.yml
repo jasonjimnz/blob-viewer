@@ -1,0 +1,14 @@
+services:
+  blob-viewer:
+    image: ghcr.io/jasonjimnz/blob-viewer:latest
+    container_name: blob-viewer
+    ports:
+      - "8585:8585"
+    volumes:
+      - blob-viewer-data:/data
+    # Uncomment to require login:
+    # command: ["serve", "--locked", "--host", "0.0.0.0", "--port", "8585"]
+    restart: unless-stopped
+
+volumes:
+  blob-viewer-data:
