@@ -1,0 +1,214 @@
+/* ==========================================================================
+   Blob Viewer — theme palettes
+   Each theme is a [data-theme] block of CSS custom properties consumed by
+   base.css / app.css. To add a theme: add a block here + an entry in
+   src/blob_viewer/themes.py.
+   ========================================================================== */
+
+:root, [data-theme="obsidian"] {
+  --bg: #0f1115;
+  --bg-alt: #161a22;
+  --bg-panel: #1b202b;
+  --bg-hover: #232a38;
+  --bg-active: #2a3347;
+  --border: #2a3242;
+  --border-strong: #3a455c;
+  --text: #e6eaf2;
+  --text-dim: #8b94a7;
+  --text-faint: #5c6577;
+  --accent: #4cc2ff;
+  --accent-hover: #7ad1ff;
+  --accent-contrast: #06202c;
+  --accent-soft: rgba(76, 194, 255, 0.14);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --topbar-bg: rgba(15, 17, 21, 0.85);
+  --sidebar-bg: #12151c;
+  --code-bg: #141922;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --scrollbar: #333c4e;
+  color-scheme: dark;
+}
+
+[data-theme="midnight"] {
+  --bg: #060a18;
+  --bg-alt: #0b1226;
+  --bg-panel: #101a36;
+  --bg-hover: #17244a;
+  --bg-active: #1d2d5c;
+  --border: #1c2a52;
+  --border-strong: #2b3d72;
+  --text: #e3e9ff;
+  --text-dim: #7f8cbd;
+  --text-faint: #4d5a8c;
+  --accent: #6d8dff;
+  --accent-hover: #93aaff;
+  --accent-contrast: #060a18;
+  --accent-soft: rgba(109, 141, 255, 0.15);
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --topbar-bg: rgba(6, 10, 24, 0.85);
+  --sidebar-bg: #080e20;
+  --code-bg: #0a1128;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --scrollbar: #233158;
+  color-scheme: dark;
+}
+
+[data-theme="nord"] {
+  --bg: #2e3440;
+  --bg-alt: #333b4a;
+  --bg-panel: #3b4252;
+  --bg-hover: #434c5e;
+  --bg-active: #4c566a;
+  --border: #3f4859;
+  --border-strong: #4c566a;
+  --text: #eceff4;
+  --text-dim: #9aa5b8;
+  --text-faint: #6d7887;
+  --accent: #88c0d0;
+  --accent-hover: #a5d4e0;
+  --accent-contrast: #212733;
+  --accent-soft: rgba(136, 192, 208, 0.16);
+  --success: #a3be8c;
+  --warning: #ebcb8b;
+  --danger: #bf616a;
+  --topbar-bg: rgba(46, 52, 64, 0.88);
+  --sidebar-bg: #292e39;
+  --code-bg: #272c36;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  --scrollbar: #4c566a;
+  color-scheme: dark;
+}
+
+[data-theme="forest"] {
+  --bg: #0e1512;
+  --bg-alt: #142019;
+  --bg-panel: #1a2a21;
+  --bg-hover: #22382c;
+  --bg-active: #2a4636;
+  --border: #23392c;
+  --border-strong: #33543f;
+  --text: #e2efe7;
+  --text-dim: #86a493;
+  --text-faint: #56705f;
+  --accent: #5eead4;
+  --accent-hover: #8df0dd;
+  --accent-contrast: #06251f;
+  --accent-soft: rgba(94, 234, 212, 0.13);
+  --success: #86efac;
+  --warning: #fcd34d;
+  --danger: #f97066;
+  --topbar-bg: rgba(14, 21, 18, 0.85);
+  --sidebar-bg: #101a15;
+  --code-bg: #121e17;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --scrollbar: #2a4636;
+  color-scheme: dark;
+}
+
+[data-theme="aurora"] {
+  --bg: #120b1e;
+  --bg-alt: #1a1129;
+  --bg-panel: #221736;
+  --bg-hover: #2d1e49;
+  --bg-active: #382558;
+  --border: #2c1e49;
+  --border-strong: #3f2c66;
+  --text: #ece5f8;
+  --text-dim: #9d8fbb;
+  --text-faint: #6a5c8c;
+  --accent: #c084fc;
+  --accent-hover: #d3a4fd;
+  --accent-contrast: #1e0b33;
+  --accent-soft: rgba(192, 132, 252, 0.15);
+  --success: #6ee7b7;
+  --warning: #fcd34d;
+  --danger: #fb7185;
+  --topbar-bg: rgba(18, 11, 30, 0.85);
+  --sidebar-bg: #150d24;
+  --code-bg: #190f2b;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  --scrollbar: #382558;
+  color-scheme: dark;
+}
+
+[data-theme="paper"] {
+  --bg: #f7f8fa;
+  --bg-alt: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-hover: #eef1f5;
+  --bg-active: #e2e8f0;
+  --border: #e3e8ee;
+  --border-strong: #cbd5e1;
+  --text: #1a2230;
+  --text-dim: #64748b;
+  --text-faint: #94a3b8;
+  --accent: #2563eb;
+  --accent-hover: #3b82f6;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --topbar-bg: rgba(247, 248, 250, 0.9);
+  --sidebar-bg: #f0f2f5;
+  --code-bg: #f4f6f9;
+  --shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+  --scrollbar: #cbd5e1;
+  color-scheme: light;
+}
+
+[data-theme="sepia"] {
+  --bg: #f5efe3;
+  --bg-alt: #fdf9f0;
+  --bg-panel: #fdf9f0;
+  --bg-hover: #efe6d4;
+  --bg-active: #e5d8bf;
+  --border: #e4d9c3;
+  --border-strong: #cbbd9d;
+  --text: #3b3226;
+  --text-dim: #83745c;
+  --text-faint: #a89877;
+  --accent: #b45309;
+  --accent-hover: #c9660c;
+  --accent-contrast: #fdf9f0;
+  --accent-soft: rgba(180, 83, 9, 0.1);
+  --success: #4d7c0f;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --topbar-bg: rgba(245, 239, 227, 0.9);
+  --sidebar-bg: #efe7d6;
+  --code-bg: #f2ebdb;
+  --shadow: 0 8px 30px rgba(59, 50, 38, 0.15);
+  --scrollbar: #cbbd9d;
+  color-scheme: light;
+}
+
+[data-theme="porcelain"] {
+  --bg: #f2f5f6;
+  --bg-alt: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-hover: #e8edee;
+  --bg-active: #d9e2e4;
+  --border: #dde5e7;
+  --border-strong: #b9c8cc;
+  --text: #16302f;
+  --text-dim: #5f7a78;
+  --text-faint: #8fa6a4;
+  --accent: #0d9488;
+  --accent-hover: #14b8a6;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(13, 148, 136, 0.1);
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --topbar-bg: rgba(242, 245, 246, 0.9);
+  --sidebar-bg: #eaeff0;
+  --code-bg: #f0f4f4;
+  --shadow: 0 8px 30px rgba(22, 48, 47, 0.12);
+  --scrollbar: #b9c8cc;
+  color-scheme: light;
+}
