@@ -2,6 +2,16 @@
 
 All notable changes to Blob Viewer are documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.1.8] — 2026-10-11
+
+### Fixed
+
+- PDF viewer failed to load: on Windows the stdlib `mimetypes` registry serves
+  `.mjs` as `text/plain`, and browsers refuse dynamic module imports with a
+  strict MIME check. `.mjs/.js/.wasm/.svg` are now registered explicitly at
+  app startup.
+- Browser e2e regression: renders a real PDF (canvas + page counter) via pdf.js.
+
 ## [0.1.7] — 2026-10-11
 
 ### Fixed

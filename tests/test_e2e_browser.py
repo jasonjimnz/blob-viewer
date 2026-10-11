@@ -28,6 +28,18 @@ def _s3():
     )
 
 
+MINIMAL_PDF = b"""%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj
+4 0 obj << /Length 62 >> stream
+BT /F1 24 Tf 72 720 Td (Blob Viewer PDF test) Tj ET
+endstream endobj
+5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj
+trailer << /Root 1 0 R >>
+%%EOF"""
+
+
 @pytest.fixture(scope="module", autouse=True)
 def markdown_fixture(rustfs_ws, service_session):
     """Ensure the browser test's expected object content (independent of order)."""
@@ -36,10 +48,12 @@ def markdown_fixture(rustfs_ws, service_session):
     _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/long.md",
                      Body="\n".join(f"## Section {i}\n\nFiller paragraph {i}.\n" for i in range(80)))
     _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/deep/inner.txt", Body="deep object")
+    _s3().put_object(Bucket=RUSTFS_BUCKET, Key="e2e/doc.pdf", Body=MINIMAL_PDF)
     c = create_app(service_session).test_client()
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/hello.md"})
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/long.md"})
     c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/deep/inner.txt"})
+    c.post(f"/api/workspaces/{rustfs_ws.id}/evict", json={"path": "e2e/doc.pdf"})
     yield
 
 
@@ -133,6 +147,13 @@ def test_ui_browse_preview_sync(live_server, browser):
     page.wait_for_selector(".preview-markdown")
     badge_text = page.locator(".modal .badge").inner_text().strip()
     assert badge_text in ("downloaded", "from cache")
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
+
+    # regression: PDF preview renders via pdf.js (canvas + page counter)
+    page.get_by_text("doc.pdf").first.click()
+    page.wait_for_selector(".preview-pdf canvas", timeout=15000)
+    expect(page.locator("#pdf-page")).to_contain_text("1 / 1")
     page.keyboard.press("Escape")
     page.wait_for_timeout(250)
 

@@ -7,11 +7,24 @@ from ``POST /api/auth/login``.
 
 from __future__ import annotations
 
+import mimetypes
 import os
 from pathlib import Path
 
 from flask import Flask, Response, g, jsonify, render_template, request, send_file
 from werkzeug.exceptions import BadRequest
+
+# Ensure JS-module and friends are served with strict-correct MIME types.
+# On Windows, mimetypes may resolve .mjs to text/plain (or miss it entirely),
+# which makes browsers refuse dynamic module imports (pdf.js viewer etc.).
+for _ext, _mime in (
+    (".mjs", "text/javascript"),
+    (".js", "text/javascript"),
+    (".wasm", "application/wasm"),
+    (".svg", "image/svg+xml"),
+):
+    mimetypes.add_type(_mime, _ext)
+
 
 from . import __version__
 from .auth import AuthError
