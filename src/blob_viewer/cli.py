@@ -421,23 +421,34 @@ def _cmd_ws_add(args, initial: bool = False) -> int:  # noqa: ANN001
         else "s3"
     )
     data["kind"] = kind
-    if not data.get("name") and not interactive:
+    # `init` does not carry the workspace flags; treat them as absent
+    name = getattr(args, "name", None)
+    endpoint = getattr(args, "endpoint", None)
+    bucket = getattr(args, "bucket", None)
+    region = getattr(args, "region", None)
+    prefix = getattr(args, "prefix", None)
+    path_style = getattr(args, "path_style", None)
+    access_key = getattr(args, "access_key", None)
+    secret_key = getattr(args, "secret_key", None)
+    local_path = getattr(args, "local_path", None)
+    read_only_flag = getattr(args, "read_only", False)
+    if not name and not interactive:
         console.print("[red]Error:[/red] --name is required when running non-interactively")
         return 1
     if kind == "s3":
-        data["name"] = args.name or _ask("Workspace name")
-        if args.endpoint and args.bucket:
+        data["name"] = name or _ask("Workspace name")
+        if endpoint and bucket:
             # fully non-interactive invocation
             data.update(
-                endpoint=args.endpoint, bucket=args.bucket, region=args.region,
-                prefix=args.prefix,
-                path_style=bool(args.path_style) or (interactive and _confirm("Use path-style addressing?", True)),
+                endpoint=endpoint, bucket=bucket, region=region,
+                prefix=prefix,
+                path_style=bool(path_style) or (interactive and _confirm("Use path-style addressing?", True)),
             )
             secrets: dict[str, str | None] = {}
-            if args.access_key:
-                secrets["access_key"] = args.access_key
-            if args.secret_key:
-                secrets["secret_key"] = args.secret_key
+            if access_key:
+                secrets["access_key"] = access_key
+            if secret_key:
+                secrets["secret_key"] = secret_key
             if secrets:
                 data["secrets"] = secrets
         else:
@@ -446,14 +457,10 @@ def _cmd_ws_add(args, initial: bool = False) -> int:  # noqa: ANN001
                 return 1
             s3 = _prompt_s3()
             data.update({k: v for k, v in s3.items() if v not in (None, "", {})})
-        if args.access_key:
-            data.setdefault("secrets", {})["access_key"] = args.access_key
-        if args.secret_key:
-            data.setdefault("secrets", {})["secret_key"] = args.secret_key
     else:
-        data["name"] = args.name or _ask("Workspace name")
-        data["local_path"] = args.local_path or _ask("Folder path")
-        read_only = args.read_only or _confirm("Make it read-only?")
+        data["name"] = name or _ask("Workspace name")
+        data["local_path"] = local_path or _ask("Folder path")
+        read_only = read_only_flag or _confirm("Make it read-only?")
         if read_only:
             data["read_only"] = True
 
